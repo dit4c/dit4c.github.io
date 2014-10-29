@@ -28,7 +28,7 @@
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 </head>
 <body>
-  <div class="jumbotron">
+  <header class="jumbotron">
     <div class="container">
       <img class="img-responsive center-block" src="/images/logo.png"/>
       <p class="text-center">
@@ -44,16 +44,62 @@
         </a>
       </p>
     </div>
-  </div>
+  </header>
   <div class="container">
     <div class="row">
       <div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8">
-      <p>DIT4C is a platform for hosting data analysis tools &quot;in the cloud&quot; using Docker containers. Docker images provide the tools, and DIT4C provides a secure hosting platform for them.</p>
-<p>To improve scalability and security, DIT4C runs all Docker containers on compute nodes separate from the portal. Compute nodes are spun up by their owners and registered with the portal. Compute node owners can provide access tokens for others to use the node to run containers. Owners can stop or remove any container on their node via the portal, but not view their contents.</p>
+      <p><abbr title="Data Intensive Tools for the Cloud">DIT4C</abbr> <em>(dit-for-see)</em> is a platform for hosting data analysis tools &quot;in the cloud&quot; using Docker containers. Docker images provide the tools, and DIT4C provides a secure hosting platform for them.</p>
+<hr>
+<h3 id="host-locally-run-globally">Host locally, run globally</h3>
+<p>DIT4C isn&#39;t a hosted service. You can run it anywhere you want.</p>
+<p>As long as your users have Internet access and a modern browser, they&#39;ll be able to get to their tools from wherever they are.</p>
+<hr>
+<h3 id="pick-an-image-or-bring-your-own">Pick an image, or bring your own</h3>
+<p>DIT4C has plenty of images to choose from:</p>
+<ul>
+<li><a href="https://registry.hub.docker.com/u/dit4c/dit4c-container-ipython/">iPython Notebooks</a></li>
+<li><a href="https://registry.hub.docker.com/u/dit4c/dit4c-container-rstudio/">RStudio</a></li>
+<li><a href="https://registry.hub.docker.com/u/dit4c/dit4c-container-ijulia/">IJulia</a></li>
+<li><a href="https://registry.hub.docker.com/u/dit4c/dit4c-container-octave/">Octave</a></li>
+</ul>
+<p>If they&#39;re not an instant fit, that&#39;s OK. DIT4C can use any appropriate image from Docker Hub.</p>
+<h4 id="want-a-package-installed-for-all-new-containers-">Want a package installed for all new containers?</h4>
+<p>Extend one of the existing tool images.</p>
+<pre><code># DOCKERFILE 1.0
+
+FROM dit4c/dit4c-container-ipython
+
+ADD yum install -y awesome-package-we-forgot
+</code></pre><h4 id="need-to-run-your-own-tool-">Need to run your own tool?</h4>
+<p>Extend one of the base images:</p>
+<ul>
+<li><a href="https://registry.hub.docker.com/u/dit4c/dit4c-container-base/">Base</a></li>
+<li><a href="https://registry.hub.docker.com/u/dit4c/dit4c-container-x11/">X11 Desktop</a></li>
+</ul>
+<hr>
+<h3 id="bring-your-own-compute">Bring Your Own Compute</h3>
+<p>To improve scalability and security, DIT4C runs all Docker containers on compute nodes separate from the portal.</p>
+<p>Compute nodes are spun up by their owners and registered with the portal. Compute node owners can then provide access tokens for others to use the node to run containers. Owners can stop or remove any container on their node via the portal, but not view their contents.</p>
+<p>From bare metal to cloud VMs, DIT4C allows compute to be provided in whatever way makes sense for the users. For the security-conscious, DIT4C can even use
+SSL for communication between the portal and individual compute nodes, providing end-to-end encryption.</p>
 
       </div>
     </div>
   </div>
-
+  <br />
+  <footer class="jumbotron">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 text-center">
+          <p>Want to know more?</p>
+          <p>
+            <a href="https://github.com/dit4c/dit4c">
+              Read more on GitHub
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
