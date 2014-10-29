@@ -1,0 +1,13 @@
+.jumbotron {
+  background: #8080FF;
+}
+.jumbotron .btn-outline {
+  color: white;
+  background: transparent;
+  border-color: white;
+  font-weight: bold;
+}
+.container p {
+  font-family: 'Raleway', inherit;
+  font-size: 125%;
+}
