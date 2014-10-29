@@ -18,10 +18,11 @@
   <link rel="icon" sizes="144x144" href="/images/icon-144x144.png"/>
   <link rel="icon" sizes="192x192" href="/images/icon-192x192.png"/>
 
-  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
-  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-  <link href="/stylesheets/main.css" rel="stylesheet">
-  <link href='//fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"/>
+  <link href="/stylesheets/dockericon.css" rel="stylesheet"/>
+  <link href="/stylesheets/main.css" rel="stylesheet"/>
+  <link href='//fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'/>
 
   <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
@@ -31,18 +32,26 @@
     <div class="container">
       <img class="img-responsive center-block" src="/images/logo.png"/>
       <p class="text-center">
-        <a class="btn btn-outline" href="https://github.com/dit4c/dit4c">
-          <i class="fa fa-github"></i>
+        <a class="btn btn-lg btn-outline"
+           href="https://github.com/dit4c/dit4c">
+          <i class="fa fa-lg fa-github"></i>
           GitHub
+        </a>
+        <a class="btn btn-lg btn-outline"
+           href="https://registry.hub.docker.com/repos/dit4c/">
+          <i class="fa fa-lg fa-docker"></i>
+          Docker
         </a>
       </p>
     </div>
   </div>
   <div class="container">
     <div class="row">
-      <div class="col-xs-12"><p>DIT4C is a platform for hosting data analysis tools &quot;in the cloud&quot; using Docker containers. Docker images provide the tools, and DIT4C provides a secure hosting platform for them.</p>
-<p>DIT4C testing</p>
-</div>
+      <div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8">
+      <p>DIT4C is a platform for hosting data analysis tools &quot;in the cloud&quot; using Docker containers. Docker images provide the tools, and DIT4C provides a secure hosting platform for them.</p>
+<p>To improve scalability and security, DIT4C runs all Docker containers on compute nodes separate from the portal. Compute nodes are spun up by their owners and registered with the portal. Compute node owners can provide access tokens for others to use the node to run containers. Owners can stop or remove any container on their node via the portal, but not view their contents.</p>
+
+      </div>
     </div>
   </div>
 
