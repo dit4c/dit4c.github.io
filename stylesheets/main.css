@@ -1,5 +1,8 @@
 .jumbotron {
-  background: #8080ff;
+  background-color: #0042a5;
+  background-image: url("/images/bg.jpg");
+  background-position: center top;
+  background-size: cover;
 }
 .jumbotron .btn-outline {
   color: white;
@@ -8,7 +11,7 @@
   font-weight: bolder;
 }
 .jumbotron .btn-outline:hover {
-  color: #8080ff;
+  color: #0042a5;
   background: white;
   border-color: white;
   font-weight: bolder;
