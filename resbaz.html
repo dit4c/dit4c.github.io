@@ -50,9 +50,14 @@
 </li>
 <li>10-20 compute nodes</li>
 </ul>
-<p><img src="https://maps.googleapis.com/maps/api/staticmap?size=400x350&format=png32&zoom=5&center=-37.814107,144.96327999999994&markers=-37.814107,144.96327999999994&markers=-34.92862119999999,138.5999594&markers=-35.2819998,149.12868430000003&markers=-42.8819032,147.32381480000004&markers=-33.8674869,151.20699020000006" class="img-rounded"/></p>
+<p><img src="https://github.com/dit4c/dit4c/raw/master/docs/architecture.png" alt="DIT4C Architecture overview"></p>
 <h2 id="clustering">Clustering</h2>
 <p>A five node <a href="https://github.com/coreos/etcd">etcd</a> cluster is capable of tolerating two lost nodes before it ceases to function. Prior to deploying DIT4C, a cluster of CoreOS VMs was set up across five <a href="https://nectar.org.au/">NeCTAR Research Cloud</a> data-centres with &le;50ms ping times between them. <a href="https://github.com/coreos/flannel">Flannel</a> was deployed to provide a private shared network between the nodes.</p>
+<figure>
+<img src="https://maps.googleapis.com/maps/api/staticmap?size=400x350&format=png32&zoom=5&center=-37.814107,144.96327999999994&markers=-37.814107,144.96327999999994&markers=-34.92862119999999,138.5999594&markers=-35.2819998,149.12868430000003&markers=-42.8819032,147.32381480000004&markers=-33.8674869,151.20699020000006" class="img-rounded"/>
+<figcaption>Data-centre locations</figcaption>
+</figure>
+
 <p>All five nodes were then deployed with routing containers, and three of the nodes with portal containers. A <a href="https://github.com/dit4c/dit4c-cluster-manager">cluster manager</a> was used to monitor the portal containers and setup continuous replication between the three CouchDB instances.</p>
 <p>Round-robin DNS was used to spread requests between the five compute nodes. The <a href="https://github.com/hipache/hipache">Hipache</a> proxies spread requests between the three portal nodes.</p>
 <h2 id="high-availability">High Availability</h2>

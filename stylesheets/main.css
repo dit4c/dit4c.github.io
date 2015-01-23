@@ -28,3 +28,14 @@ footer.jumbotron {
   font-family: 'Raleway', inherit;
   font-size: 110%;
 }
+figure {
+  margin-bottom: 1em;
+}
+figure img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+figure figcaption {
+  text-align: center;
+}
