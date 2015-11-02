@@ -58,10 +58,14 @@
 <h3 id="pick-an-image-or-bring-your-own">Pick an image, or bring your own</h3>
 <p>DIT4C has plenty of images to choose from:</p>
 <ul>
-<li><a href="https://registry.hub.docker.com/u/dit4c/dit4c-container-ipython/">IPython Notebook</a></li>
-<li><a href="https://registry.hub.docker.com/u/dit4c/dit4c-container-rstudio/">RStudio</a></li>
-<li><a href="https://registry.hub.docker.com/u/dit4c/dit4c-container-ijulia/">IJulia</a></li>
-<li><a href="https://registry.hub.docker.com/u/dit4c/dit4c-container-octave/">Octave</a></li>
+<li><a href="https://hub.docker.com/r/dit4c/dit4c-container-ipython/">IPython Notebook</a></li>
+<li><a href="https://hub.docker.com/r/dit4c/dit4c-container-rstudio/">RStudio</a></li>
+<li><a href="https://hub.docker.com/r/dit4c/dit4c-container-octave/">Octave (GUI)</a></li>
+<li><a href="https://hub.docker.com/r/dit4c/dit4c-container-jupyter/">Octave &amp; Julia (Jupyter)</a></li>
+<li><a href="https://hub.docker.com/r/dit4c/dit4c-container-openrefine/">OpenRefine</a></li>
+<li><a href="https://hub.docker.com/r/dit4c/dit4c-container-slicer/">Slicer</a></li>
+<li><a href="https://hub.docker.com/r/dit4c/dit4c-container-blender/">Blender</a></li>
+<li><a href="https://hub.docker.com/r/dit4c/dit4c-container-gephi/">Gephi</a></li>
 </ul>
 <p>If they&#39;re not an instant fit, that&#39;s OK. DIT4C can use any appropriate image from Docker Hub.</p>
 <h4 id="want-a-package-installed-for-all-new-containers-">Want a package installed for all new containers?</h4>
@@ -70,12 +74,12 @@
 
 FROM dit4c/dit4c-container-ipython
 
-ADD yum install -y awesome-package-we-forgot
+ADD sudo yum install -y awesome-package-we-forgot
 </code></pre><h4 id="need-to-run-your-own-tool-">Need to run your own tool?</h4>
 <p>Extend one of the base images:</p>
 <ul>
-<li><a href="https://registry.hub.docker.com/u/dit4c/dit4c-container-base/">Base</a></li>
-<li><a href="https://registry.hub.docker.com/u/dit4c/dit4c-container-x11/">X11 Desktop</a></li>
+<li><a href="https://hub.docker.com/r/dit4c/dit4c-container-base/">Base</a></li>
+<li><a href="https://hub.docker.com/r/dit4c/dit4c-container-x11/">X11 Desktop</a></li>
 </ul>
 <hr>
 <h3 id="bring-your-own-compute">Bring Your Own Compute</h3>
