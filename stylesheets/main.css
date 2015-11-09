@@ -24,8 +24,10 @@ footer.jumbotron {
   margin-top: 30px;
   margin-bottom: 0;
 }
+.container {
+  font-family: 'Raleway', sans-serif;
+}
 .container p {
-  font-family: 'Raleway', inherit;
   font-size: 110%;
 }
 figure {
