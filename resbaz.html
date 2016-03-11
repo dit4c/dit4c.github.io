@@ -59,7 +59,7 @@
 </figure>
 
 <p>All five nodes were then deployed with routing containers, and three of the nodes with portal containers. A <a href="https://github.com/dit4c/dit4c-cluster-manager">cluster manager</a> was used to monitor the portal containers and setup continuous replication between the three CouchDB instances.</p>
-<p>Round-robin DNS was used to spread requests between the five compute nodes. The <a href="https://github.com/dit4c/nginx-etcd-vhosts">dynamic reverse proxies</a> spread requests between the three portal nodes and to the correct compute nodes for containers.</p>
+<p>Round-robin DNS was used to spread requests between the five cluster nodes. The <a href="https://github.com/dit4c/nginx-etcd-vhosts">dynamic reverse proxies</a> spread requests between the three portal nodes and to the correct compute nodes for containers.</p>
 <h2 id="high-availability">High Availability</h2>
 <p>For domains with multiple A records, modern web browsers can try another server if they fail to get a response. This allows nodes in the cluster to reboot with minimal disruption to users.</p>
 <p>Monitoring of the <em>&quot;highcommand&quot;</em> portal servers is necessary to ensure Hipache doesn&#39;t continually try to contact dead servers.</p>
