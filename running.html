@@ -1,0 +1,720 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Running DIT4C</title>
+  <link rel="canonical" href="false"/>
+
+  <meta name="viewport" content="width=device-width">
+  <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"/>
+  <link rel="apple-touch-icon" sizes="60x60" href="/images/apple-touch-icon-60x60.png"/>
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/apple-touch-icon-76x76.png"/>
+  <link rel="apple-touch-icon" sizes="120x120" href="/images/apple-touch-icon-120x120.png"/>
+  <link rel="apple-touch-icon" sizes="152x152" href="/images/apple-touch-icon-152x152.png"/>
+  <link rel="icon" sizes="36x36" href="/images/icon-36x36.png"/>
+  <link rel="icon" sizes="48x48" href="/images/icon-48x48.png"/>
+  <link rel="icon" sizes="72x72" href="/images/icon-72x72.png"/>
+  <link rel="icon" sizes="96x96" href="/images/icon-96x96.png"/>
+  <link rel="icon" sizes="128x128" href="/images/icon-128x128.png"/>
+  <link rel="icon" sizes="144x144" href="/images/icon-144x144.png"/>
+  <link rel="icon" sizes="192x192" href="/images/icon-192x192.png"/>
+
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"/>
+  <link href="/stylesheets/dockericon.css" rel="stylesheet"/>
+  <link href="/stylesheets/main.css" rel="stylesheet"/>
+  <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'/>
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet" type='text/css'/>
+
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+  <header class="pattern">
+    <a href="/">
+      <img class="img-responsive center-block"
+          src="/images/logo.png"
+          style="height: 80px; padding: 5px"/>
+    </a>
+  </header>
+  <article class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8">
+      <h1 id="running-dit4c">Running DIT4C</h1>
+<h2 id="overview">Overview</h2>
+<h3 id="in-development">In Development</h3>
+<p>To run a minimal DIT4C environment for development, you need to run the following:</p>
+<ul>
+<li><a href="#apache-cassandra">Apache Cassandra</a></li>
+<li><a href="#dit4c-portal">DIT4C portal</a></li>
+<li><a href="#dit4c-scheduler">a DIT4C scheduler</a></li>
+<li><a href="#coreos-vm-compute-node">a CoreOS VM to serve as a compute node</a></li>
+</ul>
+<p>You may optionally run a:</p>
+<ul>
+<li><a href="#dit4c-image-server">DIT4C image server</a> (<a href="https://github.com/dit4c/dit4c-imageserver-filesystem">dit4c-imageserver-filesystem</a>/<a href="https://github.com/dit4c/dit4c-imageserver-swift">dit4c-imageserver-swift</a>)</li>
+<li><a href="#dit4c-routing-server">DIT4C routing server</a> (<a href="https://github.com/dit4c/dit4c-routingserver-ssh/">dit4c-routingserver-ssh</a>)</li>
+<li><a href="#dit4c-storage-server">DIT4C storage server</a> (<a href="https://github.com/dit4c/dit4c-fileserver-9pfs/">dit4c-fileserver-9pfs</a>)</li>
+</ul>
+<p>If you do not wish to save instances, you do not need to deploy an image server. By using a helper that utilizes <a href="https://ngrok.com/">ngrok</a>, you do not need to run a routing server in development. However, you should avoid using ngrok for the traffic demands of a production service.</p>
+<h3 id="in-production">In Production</h3>
+<p>When running the portal in production, you will need a TLS certificate, as HTTPS is required for secure OAuth. A <a href="https://letsencrypt.org/">Let&#39;s Encrypt</a> certificate will be perfectly satisfactory. A self-signed certificate will not, as almost every service of DIT4C accesses the portal and expects a valid certificate when using HTTPS.</p>
+<p>You will also need to run a DIT4C routing server. To use the recommended routing server with (<a href="https://github.com/dit4c/dit4c-routingserver-ssh/">dit4c-routingserver-ssh</a>) you will require a wildcard certificate. Using HTTPS is <strong>strongly</strong> advised, and you can use a self-signed certificate for test environments if necessary.</p>
+<hr>
+<h2 id="apache-cassandra">Apache Cassandra</h2>
+<h3 id="in-development">In Development</h3>
+<p>A database is required for both the portal and scheduler. Ensure Cassandra is available somehow on <code>localhost:9042</code>. By default, no authentication is expected.</p>
+<p>From tarball or Debian package:
+<a href="http://cassandra.apache.org/doc/latest/getting_started/installing.html">http://cassandra.apache.org/doc/latest/getting_started/installing.html</a></p>
+<p>Docker image:
+<a href="https://hub.docker.com/r/_/cassandra/">https://hub.docker.com/r/_/cassandra/</a></p>
+<h3 id="in-production">In Production</h3>
+<p>You likely will want to run Cassandra with replication. While the portal is not currently capable of running as a cluster, this will allow relatively quick restart on a cold stand-by machine should that be necessary. If you wish to use etcd to coordinate that cluster, take a look at <a href="https://github.com/dit4c/container-cassandra-etcd">https://github.com/dit4c/container-cassandra-etcd</a>.</p>
+<p>Cassandra authentication can be configured <a href="https://docs.datastax.com/en/cassandra/3.0/cassandra/configuration/secureConfigNativeAuth.html">as described in its manual</a>. The DIT4C portal and scheduler use <a href="https://github.com/akka/akka-persistence-cassandra/">akka-persistence-cassandra</a>, which provides <a href="https://github.com/akka/akka-persistence-cassandra/blob/v0.23/src/main/resources/reference.conf#L164">authentication configuration</a>.</p>
+<p>Examples of Cassandra backup scripts can be found in <a href="https://github.com/dit4c/backup-scripts">https://github.com/dit4c/backup-scripts</a>.</p>
+<hr>
+<h2 id="dit4c-portal">DIT4C portal</h2>
+<h3 id="in-development">In Development</h3>
+<h4 id="running-the-portal">Running the portal</h4>
+<p>Running the portal in development requires that you have <a href="https://git-scm.com/">Git</a> &amp; <a href="http://www.scala-sbt.org/">SBT</a> installed.</p>
+<pre><code>git clone https://github.com/dit4c/dit4c.git
+cd dit4c
+sbt &quot;;project portal;~run -Dplay.crypto.secret=foobar&quot;
+</code></pre><h4 id="portal-ip-address">Portal IP address</h4>
+<p>To send messages to the DIT4C portal, other services need a hostname or IP address. In production this will likely be DNS A record pointing to a public IPv4 address. In development, because not all DIT4C services run on the same network stack (eg. compute nodes), using &quot;localhost&quot; (<code>127.0.0.1</code> or <code>::1</code>) won&#39;t work. It&#39;s important to instead use an IP address that&#39;s reachable by all components. Most likely this will be the gateway address of the private network you&#39;re running the compute node VM on, but it could be another address.</p>
+<p>For future examples, we&#39;ll use <code>192.168.100.1</code>.</p>
+<h3 id="in-production">In Production</h3>
+<h4 id="running-the-portal-container">Running the portal container</h4>
+<p>Container builds of the portal are available for quick start and upgrading. They can be built from source using <a href="https://github.com/dit4c/dit4c/blob/master/scripts/build_containers.sh">scripts/build_containers.sh</a>.</p>
+<p>This also makes it easy to reverse-proxy the DIT4C portal behind a HTTP2 reverse-proxy for improved performance and security.</p>
+<p>To run the container using a <a href="https://nghttp2.org/documentation/nghttpx.1.html">nghttpx reverse-proxy</a>:</p>
+<pre><code>/usr/bin/rkt run \
+  --dns=8.8.8.8 \
+  --hostname=dit4c-portal \
+  --hosts-entry=127.0.0.1=dit4c-portal \
+  --volume tls,kind=host,source=/etc/tls,readOnly=true \
+  --volume=conf,kind=host,source=/etc/dit4c-portal,readOnly=true \
+  https://github.com/dit4c/dit4c/releases/download/v0.10.2/dit4c-portal.linux.amd64.aci \
+  --mount volume=conf,target=/conf \
+  --port ssh:2222 \
+  -- \
+  -Dconfig.file=/conf/prod.conf \
+  --- \
+  https://github.com/dit4c/dockerfile-nghttpx/releases/download/1.1.1/nghttpx.linux.amd64.aci \
+  --mount volume=conf,target=/data/conf \
+  --mount volume=tls,target=/data/tls \
+  --port 3000-tcp:443 \
+  -- \
+  --conf=/data/conf/nghttpx.conf \
+  --backend=127.0.0.1,9000 \
+  /data/tls/server.key /data/tls/server.crt
+</code></pre><p><code>nghttpx.conf</code>:</p>
+<pre><code>accesslog-file=/dev/stdout
+errorlog-file=/dev/stderr
+
+backend-read-timeout=86400
+http2-no-cookie-crumbling=true
+ciphers=ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA
+add-response-header=Strict-Transport-Security: max-age=15724800; includeSubDomains
+add-forwarded=by,for,host,proto
+forwarded-by=ip
+forwarded-for=ip
+</code></pre><p>Example <code>nghttpx.conf</code>:</p>
+<pre><code># include the base config - very important!
+&quot;&quot;application&quot;&quot; file not found.
+
+cassandra-settings {
+  authentication {
+    username=&quot;cassandra-user&quot;
+    password=&quot;6TxnrbXIuWh5u1Q2LDVEpMmo4ASQjCET&quot;
+  }
+  cluster-id = &quot;dit4c-portal&quot;
+  contact-points = [&quot;10.99.1.20&quot;, &quot;10.99.1.30&quot;, &quot;10.99.1.40&quot;]
+  replication-strategy = &quot;NetworkTopologyStrategy&quot;
+  data-center-replication-factors = [&quot;melbourne-qh2-uom:1&quot;, &quot;melbourne-np:1&quot;, &quot;QRIScloud:1&quot;]
+  used-hosts-per-remote-dc = 1
+  write-consistency = &quot;QUORUM&quot;
+  read-consistency = &quot;QUORUM&quot;
+}
+cassandra-journal = ${cassandra-settings}
+cassandra-snapshot-store = ${cassandra-settings}
+
+silhouette {
+  # GitHub API credentials
+  github.clientID=69be19206bcda8e7491c
+  github.clientSecret=32aaba716908b4ef73fb8bbd3096b156
+  # RapidAAF (Australian Access Federation) credentials
+  rapidaaf.url=&quot;https://rapid.aaf.edu.au/jwt/authnrequest/research/BMXaBBFAGMLFYlpxbOI9SY&quot;
+  rapidaaf.secret=vLiGY1QkMCjmhSQ3ryWEjhzZSYInPqaN
+}
+images {
+  # DIT4C image server for saving images
+  server=&quot;https://images.dit4c.example&quot;
+  # Helper ACI for uploading images
+  saveHelper=&quot;https://openstack-swift-server.example:8888/v1/AUTH_faa5bca1140a4824bfc96215c92498dd/dit4c-public-images/dit4c-helper-upload-webdav.linux.amd64.aci&quot;
+  # Public container images (converted using docker2aci)
+  public=null
+  public {
+    openrefine {
+      display = &quot;OpenRefine&quot;
+      image = &quot;https://openstack-swift-server.example:8888/v1/AUTH_baaf1c56475deb8506abd9325fb69a07/dit4c-public-images/dit4c-dit4c-container-openrefine-latest.aci&quot;
+    }
+    jupyter {
+      display = &quot;Jupyter with Python &amp; R&quot;
+      image = &quot;https://openstack-swift-server.example:8888/v1/AUTH_baaf1c56475deb8506abd9325fb69a07/dit4c-public-images/dit4c-dit4c-container-jupyter-latest.aci&quot;
+    }
+  }
+}
+# Google Analytics details
+tracking.ga {
+  id=&quot;UA-54000000-1&quot;
+  errors=false
+}
+# Symmetric secret for encrypting cookies and portal-issued tokens
+play.crypto.secret=DIT4CextremelySecretSymmetricK3y
+# Reverse-proxy client info forwarding
+play.http.forwarded.version=rfc7239
+# Allow SSH server to be accessed outside container
+ssh.ip=0.0.0.0
+# Login page customization
+login {
+  # From https://www.flickr.com/photos/resbaz/24946337961/
+  background-image-url=&quot;https://farm2.staticflickr.com/1568/24946337961_4f91249161_k.jpg&quot;
+  message.text=&quot;![ResBaz logo](https://avatars1.githubusercontent.com/u/6485902?v=3&amp;s=200)&quot;
+}
+# Public config available via /config.json
+public-config {
+  # Routing servers
+  router.ssh.servers = [
+    &quot;bne.containers.dit4c.example:2222&quot;
+    &quot;mel.containers.dit4c.example:2222&quot;
+  ]
+  storage.9pfs.servers = [
+    &quot;45.110.234.34:2222&quot;
+  ]
+}
+</code></pre><hr>
+<h2 id="dit4c-scheduler">DIT4C scheduler</h2>
+<h3 id="scheduler-keys">Scheduler keys</h3>
+<p>DIT4C schedulers use PGP keys for identification, configuration and SSH authentication to compute nodes. You will need to create a PGP primary key for each scheduler. We&#39;ll use <code>gpg2</code>.</p>
+<h4 id="key-creation">Key Creation</h4>
+<p>First, we create a PGP primary key on a separate secure machine, solely for certification:</p>
+<pre><code>$ gpg2 --full-gen-key --expert
+gpg (GnuPG) 2.1.13; Copyright (C) 2016 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Please select what kind of key you want:
+   (1) RSA and RSA (default)
+   (2) DSA and Elgamal
+   (3) DSA (sign only)
+   (4) RSA (sign only)
+   (7) DSA (set your own capabilities)
+   (8) RSA (set your own capabilities)
+   (9) ECC and ECC
+  (10) ECC (sign only)
+  (11) ECC (set your own capabilities)
+Your selection? 8
+
+Possible actions for a RSA key: Sign Certify Encrypt Authenticate
+Current allowed actions: Sign Certify Encrypt
+
+   (S) Toggle the sign capability
+   (E) Toggle the encrypt capability
+   (A) Toggle the authenticate capability
+   (Q) Finished
+
+Your selection? s
+
+Possible actions for a RSA key: Sign Certify Encrypt Authenticate
+Current allowed actions: Certify Encrypt
+
+   (S) Toggle the sign capability
+   (E) Toggle the encrypt capability
+   (A) Toggle the authenticate capability
+   (Q) Finished
+
+Your selection? e
+
+Possible actions for a RSA key: Sign Certify Encrypt Authenticate
+Current allowed actions: Certify
+
+   (S) Toggle the sign capability
+   (E) Toggle the encrypt capability
+   (A) Toggle the authenticate capability
+   (Q) Finished
+
+Your selection? q
+RSA keys may be between 1024 and 4096 bits long.
+What keysize do you want? (2048) 4096
+Requested keysize is 4096 bits
+Please specify how long the key should be valid.
+         0 = key does not expire
+      &lt;n&gt;  = key expires in n days
+      &lt;n&gt;w = key expires in n weeks
+      &lt;n&gt;m = key expires in n months
+      &lt;n&gt;y = key expires in n years
+Key is valid for? (0) 2y
+Key expires at Sun 03 Mar 2019 12:45:01 AEST
+Is this correct? (y/N) y
+
+GnuPG needs to construct a user ID to identify your key.
+
+Real name: DIT4C dev scheduler
+Email address:
+Comment: documentation example
+You selected this USER-ID:
+    &quot;DIT4C dev scheduler (documentation example)&quot;
+
+Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? o
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+disks) during the prime generation; this gives the random number
+generator a better chance to gain enough entropy.
+gpg: key 210512A677C41E86 marked as ultimately trusted
+gpg: revocation certificate stored as &#39;/home/uqtdettr/.gnupg/openpgp-revocs.d/34546BBDED7719C865C3C4E8210512A677C41E86.rev&#39;
+public and secret key created and signed.
+
+gpg: checking the trustdb
+gpg: marginals needed: 3  completes needed: 1  trust model: pgp
+gpg: depth: 0  valid:   9  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 9u
+gpg: next trustdb check due at 2018-01-20
+pub   rsa4096 2017-03-03 [] [expires: 2019-03-03]
+      34546BBDED7719C865C3C4E8210512A677C41E86
+uid           [ultimate] DIT4C dev scheduler (documentation example)
+</code></pre><p>We then add two sub-keys for signing and authentication, choosing not to set password protection when prompted:</p>
+<pre><code>$ gpg2 --expert --edit-key 34546BBDED7719C865C3C4E8210512A677C41E86
+gpg (GnuPG) 2.1.13; Copyright (C) 2016 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Secret key is available.
+
+sec  rsa4096/210512A677C41E86
+     created: 2017-03-03  expires: 2019-03-03  usage: C
+     trust: ultimate      validity: ultimate
+[ultimate] (1). DIT4C dev scheduler (documentation example)
+
+gpg&gt; addkey
+Please select what kind of key you want:
+   (3) DSA (sign only)
+   (4) RSA (sign only)
+   (5) Elgamal (encrypt only)
+   (6) RSA (encrypt only)
+   (7) DSA (set your own capabilities)
+   (8) RSA (set your own capabilities)
+  (10) ECC (sign only)
+  (11) ECC (set your own capabilities)
+  (12) ECC (encrypt only)
+  (13) Existing key
+Your selection? 8
+
+Possible actions for a RSA key: Sign Encrypt Authenticate
+Current allowed actions: Sign Encrypt
+
+   (S) Toggle the sign capability
+   (E) Toggle the encrypt capability
+   (A) Toggle the authenticate capability
+   (Q) Finished
+
+Your selection? s
+
+Possible actions for a RSA key: Sign Encrypt Authenticate
+Current allowed actions: Encrypt
+
+   (S) Toggle the sign capability
+   (E) Toggle the encrypt capability
+   (A) Toggle the authenticate capability
+   (Q) Finished
+
+Your selection? e
+
+Possible actions for a RSA key: Sign Encrypt Authenticate
+Current allowed actions:
+
+   (S) Toggle the sign capability
+   (E) Toggle the encrypt capability
+   (A) Toggle the authenticate capability
+   (Q) Finished
+
+Your selection? a
+
+Possible actions for a RSA key: Sign Encrypt Authenticate
+Current allowed actions: Authenticate
+
+   (S) Toggle the sign capability
+   (E) Toggle the encrypt capability
+   (A) Toggle the authenticate capability
+   (Q) Finished
+
+Your selection? q
+RSA keys may be between 1024 and 4096 bits long.
+What keysize do you want? (2048)
+Requested keysize is 2048 bits
+Please specify how long the key should be valid.
+         0 = key does not expire
+      &lt;n&gt;  = key expires in n days
+      &lt;n&gt;w = key expires in n weeks
+      &lt;n&gt;m = key expires in n months
+      &lt;n&gt;y = key expires in n years
+Key is valid for? (0)
+Key does not expire at all
+Is this correct? (y/N) y
+Really create? (y/N) y
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+disks) during the prime generation; this gives the random number
+generator a better chance to gain enough entropy.
+
+sec  rsa4096/210512A677C41E86
+     created: 2017-03-03  expires: 2019-03-03  usage: C
+     trust: ultimate      validity: ultimate
+ssb  rsa2048/CD0BC076A71E68E5
+     created: 2017-03-03  expires: never       usage: A
+[ultimate] (1). DIT4C dev scheduler (documentation example)
+
+gpg&gt; addkey
+Please select what kind of key you want:
+   (3) DSA (sign only)
+   (4) RSA (sign only)
+   (5) Elgamal (encrypt only)
+   (6) RSA (encrypt only)
+   (7) DSA (set your own capabilities)
+   (8) RSA (set your own capabilities)
+  (10) ECC (sign only)
+  (11) ECC (set your own capabilities)
+  (12) ECC (encrypt only)
+  (13) Existing key
+Your selection? 4
+RSA keys may be between 1024 and 4096 bits long.
+What keysize do you want? (2048)
+Requested keysize is 2048 bits
+Please specify how long the key should be valid.
+         0 = key does not expire
+      &lt;n&gt;  = key expires in n days
+      &lt;n&gt;w = key expires in n weeks
+      &lt;n&gt;m = key expires in n months
+      &lt;n&gt;y = key expires in n years
+Key is valid for? (0)
+Key does not expire at all
+Is this correct? (y/N) y
+Really create? (y/N) y
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+disks) during the prime generation; this gives the random number
+generator a better chance to gain enough entropy.
+
+sec  rsa4096/210512A677C41E86
+     created: 2017-03-03  expires: 2019-03-03  usage: C
+     trust: ultimate      validity: ultimate
+ssb  rsa2048/CD0BC076A71E68E5
+     created: 2017-03-03  expires: never       usage: A
+ssb  rsa2048/E33DA3F435A246F9
+     created: 2017-03-03  expires: never       usage: S
+[ultimate] (1). DIT4C dev scheduler (documentation example)
+
+gpg&gt; save
+</code></pre><p>Once saved, get the full PGP key fingerprints using the primary key ID:</p>
+<pre><code>$ gpg2 --with-subkey-fingerprint --list-keys 210512A677C41E86
+pub   rsa4096 2017-03-03 [C] [expires: 2019-03-03]
+      34546BBDED7719C865C3C4E8210512A677C41E86
+uid           [ unknown] DIT4C dev scheduler (documentation example)
+sub   rsa2048 2017-03-03 [A]
+      6A6C97128AD8EAD1769E9B6DCD0BC076A71E68E5
+sub   rsa2048 2017-03-03 [S]
+      BE3950379932FF45106DF313E33DA3F435A246F9
+</code></pre><p>Future examples will use the key IDs above.</p>
+<h4 id="key-usage-explanation">Key usage explanation</h4>
+<p>We now have a primary key and two sub-keys. While in development, key security isn&#39;t as important, however it&#39;s worthwhile thinking about how key security will operate in production.</p>
+<p>The <strong>primary key</strong> should be stored securely, preferably offline when not in use for key rotation or renewal. It&#39;s entirely possible it will only be used (every two years in this case) to update the PGP key expiry date.</p>
+<p>The <strong>authentication sub-key</strong> is used by the scheduler to identify itself to the portal, and is also transformed into the SSH key that is used to log into compute nodes. Both the public and secret key will need to be exported for use on the scheduler.</p>
+<p>The <strong>signing sub-key</strong> is only used for sending messages to the scheduler. Only the public component needs to be on the scheduler. The secret key should be stored securely, and may be transferred to a smart card or other hardware device if desired.</p>
+<h4 id="key-export">Key export</h4>
+<p>Export just the authentication secret sub-key:</p>
+<pre><code>$ gpg2 --armor \
+  --export-secret-subkeys 6A6C97128AD8EAD1769E9B6DCD0BC076A71E68E5! \
+  &gt; dev_scheduler_secret_keyring.asc
+</code></pre><p>Then export all the public keys:</p>
+<pre><code>$ gpg2 --armor \
+  --export 34546BBDED7719C865C3C4E8210512A677C41E86 \
+  &gt; dev_scheduler_public_keyring.asc
+</code></pre><h4 id="create-scheduler-in-portal">Create scheduler in portal</h4>
+<p>When running in development, open <code>&lt;ip-address&gt;:9000</code> to ensure the portal app is fully loaded.</p>
+<p>SSH to port 2222, with username <code>dit4c</code> and password as the value of <code>ssh.password</code>, or if not set, <code>play.crypto.secret</code>. In the example above, this is <code>foobar</code>.</p>
+<p>Once you have a Scala REPL running inside the portal environment, send a message to create a new scheduler:</p>
+<pre><code>$ ssh -p 2222 dit4c@localhost
+Warning: Permanently added &#39;[localhost]:2222&#39; (RSA) to the list of known hosts.
+Password authentication
+Password:
+Compiling replBridge.sc
+Compiling interpBridge.sc
+Compiling HardcodedPredef.sc
+Compiling ArgsPredef.sc
+Compiling predef.sc
+Compiling SharedPredef.sc
+Compiling LoadedPredef.sc
+Welcome to the Ammonite Repl 0.8.1
+(Scala 2.11.8 Java 1.8.0_121)
+@ import domain._
+import domain._
+@ import services._
+import services._
+@ app.actorSystem.eventStream.publish(
+  SchedulerSharder.Envelope(&quot;34546BBDED7719C865C3C4E8210512A677C41E86&quot;,
+  SchedulerAggregate.Create))
+
+@ exit
+</code></pre><p>When the scheduler connects &amp; sends its PGP public keys, the portal will match them to the provided fingerprint.</p>
+<h4 id="running-the-scheduler-during-development">Running the scheduler during development</h4>
+<p>To run the scheduler with a single cluster called &quot;default&quot;:</p>
+<pre><code>$ sbt &quot;;project scheduler;run
+  --keys $(pwd)/dev_scheduler_secret_keyring.asc
+  --keys $(pwd)/dev_scheduler_public_keyring.asc
+  --portal-uri http://192.168.100.1:9000/messaging/scheduler&quot;
+</code></pre><p>If multiple clusters are necessary, a config file can be supplied.</p>
+<pre><code>$ sbt &quot;;project scheduler;run
+  --keys $(pwd)/dev_scheduler_secret_keyring.asc
+  --keys $(pwd)/dev_scheduler_public_keyring.asc
+  --portal-uri http://192.168.100.1:9000/messaging/scheduler&quot;
+  --config $(pwd)/scheduler.conf
+</code></pre><p><code>scheduler.conf</code>:</p>
+<pre><code>clusters = null
+clusters {
+  instructors {
+    displayName = &quot;Instructor Sandbox&quot;
+  }
+  training {
+    displayName = &quot;Training&quot;
+    supportsSave = false
+  }
+}
+</code></pre><h4 id="running-the-scheduler-in-production">Running the scheduler in production</h4>
+<p>Like the portal, the scheduler is packaged in a container. It may be combined with Apache Cassandra into a single pod to provide a self-contained service.</p>
+<pre><code>rkt run \
+  --dns=8.8.8.8 \
+  --hostname=dit4c-scheduler \
+  --hosts-entry=127.0.0.1=dit4c-scheduler \
+  --volume cassandra-data,kind=host,source=/var/lib/cassandra \
+  --volume=scheduler-conf,kind=host,source=/etc/dit4c-scheduler,readOnly=true \
+  https://github.com/dit4c/dit4c/releases/download/v0.10.2/dit4c-scheduler.linux.amd64.aci \
+  --mount volume=scheduler-conf,target=/conf \
+  -- \
+  --keys /conf/scheduler_keys.asc \
+  --listener-image https://openstack-swift.example:8888/v1/AUTH_faa5bca1140a4824bfc96215c92498dd/dit4c-public-images/dit4c-helper-listener-ssh.linux.amd64.aci \
+  --auth-image https://openstack-swift.example:8888/v1/AUTH_faa5bca1140a4824bfc96215c92498dd/dit4c-public-images/dit4c-helper-auth-portal.linux.amd64.aci \
+  --portal-uri https://dit4c.example/messaging/scheduler \
+  --config /conf/scheduler.conf \
+  --- \
+  https://github.com/dit4c/container-cassandra-etcd/releases/download/0.1.0/cassandra-etcd.linux.amd64.aci \
+  --mount volume=cassandra-data,target=/var/lib/cassandra
+</code></pre><h4 id="create-cluster-access-pass">Create cluster access pass</h4>
+<p>To use a scheduler&#39;s clusters, you will need a cluster access pass. It is a signed message in URL form, enumerating which clusters the holder of the token has access to, and for how long (denoted by the signature validity period).</p>
+<pre><code>$ ./scripts/create_cluster_access_token.sh
+Using libprotoc 3.1.0
+Cluster ID (enter to finish): default
+Cluster ID (enter to finish):
+
+Description (leave empty for none): Documentation example
+
+###################
+Cluster Access Pass
+TEXT:
+clusterIds: &quot;default&quot;
+description: &quot;Documentation example&quot;
+BINARY:
+00000000  0a 07 64 65 66 61 75 6c  74 12 15 44 6f 63 75 6d  |..default..Docum|
+00000010  65 6e 74 61 74 69 6f 6e  20 65 78 61 6d 70 6c 65  |entation example|
+00000020
+###################
+GPG key to sign with (enter to finish): 34546BBDED7719C865C3C4E8210512A677C41E86
+GPG key to sign with (enter to finish):
+Please specify how long the signature should be valid.
+         0 = signature does not expire
+      &lt;n&gt;  = signature expires in n days
+      &lt;n&gt;w = signature expires in n weeks
+      &lt;n&gt;m = signature expires in n months
+      &lt;n&gt;y = signature expires in n years
+Signature is valid for? (0) 1m
+Signature expires at Wed 05 Apr 2017 16:40:57 AEST
+Is this correct? (y/N) y
+###################
+Signed Cluster Access Pass
+Using:
+34546BBDED7719C865C3C4E8210512A677C41E86
+Armored:
+-----BEGIN PGP MESSAGE-----
+Version: GnuPG v2
+
+owEBXAGj/pANAwAKAeM9o/Q1okb5AcsmYgBYvQR7CgdkZWZhdWx0EhVEb2N1bWVu
+dGF0aW9uIGV4YW1wbGWJASIEAAEKAAwFAli9BHsFgwAnjQAACgkQ4z2j9DWiRvkK
+Lgf/bYkDQr6owkf8NFocJ+4fguDuCNTAw1hVsrVnGupXjGjZn2QvYFvrMe9iK/QR
+TGwzcnljglv/JN8J5kookaueVOI8uNN9g2BgYpjm+LEzNYtGzfs2FvGUHORHPDKt
+bvGJkqnXaOu8G8PXH3dsEICVcCV37rEVAbhPb4UoyiSVecHolU/TtOMUa/T4Vie2
+ABgP4TnPvahj9eS4nhfXNWNh5MigPSP5x2d1WAeFAUoaxSY5sbY0hlML0lWEfapG
+tQA8W4p+ja5D8Mi1wmapDa3DNQgeIcJoTCn1LiYlWTGn/W6FkemTCztvELU15xnf
+HS3q1F42Gekvz+uEW66y/xHSlw==
+=R3+y
+-----END PGP MESSAGE-----
+URL-encoded:
+owEBXAGj_pANAwAKAeM9o_Q1okb5AcsmYgBYvQR7CgdkZWZhdWx0EhVEb2N1bWVudGF0aW9uIGV4YW1wbGWJASIEAAEKAAwFAli9BHsFgwAnjQAACgkQ4z2j9DWiRvkKLgf_bYkDQr6owkf8NFocJ-4fguDuCNTAw1hVsrVnGupXjGjZn2QvYFvrMe9iK_QRTGwzcnljglv_JN8J5kookaueVOI8uNN9g2BgYpjm-LEzNYtGzfs2FvGUHORHPDKtbvGJkqnXaOu8G8PXH3dsEICVcCV37rEVAbhPb4UoyiSVecHolU_TtOMUa_T4Vie2ABgP4TnPvahj9eS4nhfXNWNh5MigPSP5x2d1WAeFAUoaxSY5sbY0hlML0lWEfapGtQA8W4p-ja5D8Mi1wmapDa3DNQgeIcJoTCn1LiYlWTGn_W6FkemTCztvELU15xnfHS3q1F42Gekvz-uEW66y_xHSlw
+</code></pre><p>You can then use the URL-encoded payload in a link of the form:</p>
+<p><code>&lt;dit4c-portal&gt;/share/clusters/&lt;scheduler_id&gt;/&lt;payload&gt;</code></p>
+<p>In this example, that would be:</p>
+<pre><code>http://192.168.100.1:9000/share/clusters/34546BBDED7719C865C3C4E8210512A677C41E86/owEBXAGj_pANAwAKAeM9o_Q1okb5AcsmYgBYvQR7CgdkZWZhdWx0EhVEb2N1bWVudGF0aW9uIGV4YW1wbGWJASIEAAEKAAwFAli9BHsFgwAnjQAACgkQ4z2j9DWiRvkKLgf_bYkDQr6owkf8NFocJ-4fguDuCNTAw1hVsrVnGupXjGjZn2QvYFvrMe9iK_QRTGwzcnljglv_JN8J5kookaueVOI8uNN9g2BgYpjm-LEzNYtGzfs2FvGUHORHPDKtbvGJkqnXaOu8G8PXH3dsEICVcCV37rEVAbhPb4UoyiSVecHolU_TtOMUa_T4Vie2ABgP4TnPvahj9eS4nhfXNWNh5MigPSP5x2d1WAeFAUoaxSY5sbY0hlML0lWEfapGtQA8W4p-ja5D8Mi1wmapDa3DNQgeIcJoTCn1LiYlWTGn_W6FkemTCztvELU15xnfHS3q1F42Gekvz-uEW66y_xHSlw
+</code></pre><p>You may wish to use a URL shortener for easier distribution, though consider the security implications before doing so.</p>
+<hr>
+<h2 id="coreos-vm-compute-node">CoreOS VM compute node</h2>
+<p>In theory, you could use any VM that has systemd and <a href="https://coreos.com/rkt/">rkt</a>. In practice, it&#39;s simpler to use CoreOS. In production, you&#39;re likely to use <a href="https://coreos.com/os/docs/latest/cloud-config.html">cloud-config</a> or <a href="https://coreos.com/ignition/docs/latest/">Ignition</a> to configure the reboot strategy, add SSH keys and mount storage, however the default config will work fine for development.</p>
+<h3 id="starting">Starting</h3>
+<p>There are many ways to run a CoreOS VM on your desktop. One way that works quite well for DIT4C development is using QEMU:
+<a href="https://coreos.com/os/docs/latest/booting-with-qemu.html">https://coreos.com/os/docs/latest/booting-with-qemu.html</a></p>
+<p>Start the VM with a different port, as <code>2222/tcp</code> is used by the DIT4C portal:</p>
+<pre><code>./coreos_production_qemu.sh -p 2223 -nographic
+</code></pre><h3 id="installing-ssh-keys">Installing SSH keys</h3>
+<p>You will need to deploy the SSH keys of the scheduler to the compute node. Fortunately, the DIT4C portal exposes that information via the portal.</p>
+<pre><code>$ ssh -p 2223 core@localhost
+Warning: Permanently added &#39;[localhost]:2223&#39; (ECDSA) to the list of known hosts.
+Last login: Mon Mar  6 05:09:39 UTC 2017 from 10.0.2.2 on pts/0
+CoreOS alpha (1185.0.0)
+core@coreos_production_qemu-1185-0-0 ~ $ export PS1=&quot;vm \$ &quot;
+vm $ curl -sL http://192.168.100.1:9000/schedulers/34546BBDED7719C865C3C4E8210512A677C41E86/ssh-keys &gt; /tmp/keys
+vm $ cat /tmp/keys
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGst1Yze4M3mMYGkq8l+oubbbeh9zX2Iu/QBKMNAHCUM80XK0FDQuqv0g6syTiln+hXi7RcmZogygm0n71l87iLiCchKZn+BwLJbF8TowPn5D7UcscRyGQ89trqfZdvCTz+y9zObPooS0HmhHj3jTNJ1aWpeFdhkPx7CYEa2e/1/M+Q9TtV06ilCHQwWwCBND/lF0QpKPothwT8dHbvMjtt04xV70NVf7qaWGtGirTq77NciQT3vNeRDDryXaGOUtCXlOdKu/NrAUoRlgE7nwgP1lWWm04puJqeGmmwqr7BRn8j/pvmEJQ8en964hlU8Dra0o0Tj6EVgNU9QbIeZmn
+vm $ update-ssh-keys -A scheduler &lt; /tmp/keys
+Adding/updating scheduler:
+2048 SHA256:166+GTUeSN6zcOLrsHtBSfF0SCTC1EYLKuHOzcBXZ1g no comment (RSA)
+Updated /home/core/.ssh/authorized_keys
+vm $ ssh-keyscan 127.0.0.1 2&gt;/dev/null | grep -i RSA | awk &#39;{print $2 &quot; &quot; $3 }&#39; | ssh-keygen -l -f -
+2048 SHA256:8QVNTTUeP2nN09/58Wevbbb47+foh/3YcKhJ/uM7T8o no comment (RSA)
+vm $ exit
+</code></pre><h3 id="register-compute-node-with-scheduler">Register compute node with scheduler</h3>
+<p>The scheduler does not have a web interface of its own. Instead, when connected to the portal it can receive messages signed by its own keys. As a result, in production the host running the scheduler does not need to allow any incoming traffic, only outgoing.</p>
+<p>A message is necessary to create a new compute node:</p>
+<pre><code>$ ./scripts/add_compute_node.sh
+######################################################################## 100.0%
+Using libprotoc 3.1.0
+Cluster ID: default
+Host: localhost
+Port: 2223
+Username: core
+SSH Fingerprint (enter to finish): SHA256:8QVNTTUeP2nN09/58Wevbbb47+foh/3YcKhJ/uM7T8o
+SSH Fingerprint (enter to finish):
+
+###################
+Add node request
+TEXT:
+addNode: {
+clusterId: &quot;default&quot;
+host: &quot;localhost&quot;
+port: 2223
+username: &quot;core&quot;
+sshHostKeyFingerprints: &quot;SHA256:8QVNTTUeP2nN09/58Wevbbb47+foh/3YcKhJ/uM7T8o&quot;
+}
+BINARY:
+00000000  0a 51 0a 07 64 65 66 61  75 6c 74 12 09 6c 6f 63  |.Q..default..loc|
+00000010  61 6c 68 6f 73 74 18 af  11 22 04 63 6f 72 65 2a  |alhost...&quot;.core*|
+00000020  32 53 48 41 32 35 36 3a  38 51 56 4e 54 54 55 65  |2SHA256:8QVNTTUe|
+00000030  50 32 6e 4e 30 39 2f 35  38 57 65 76 62 62 62 34  |P2nN09/58Wevbbb4|
+00000040  37 2b 66 6f 68 2f 33 59  63 4b 68 4a 2f 75 4d 37  |7+foh/3YcKhJ/uM7|
+00000050  54 38 6f                                          |T8o|
+00000053
+###################
+GPG key to sign with (enter to finish): 34546BBDED7719C865C3C4E8210512A677C41E86
+GPG key to sign with (enter to finish):
+Please specify how long the signature should be valid.
+         0 = signature does not expire
+      &lt;n&gt;  = signature expires in n days
+      &lt;n&gt;w = signature expires in n weeks
+      &lt;n&gt;m = signature expires in n months
+      &lt;n&gt;y = signature expires in n years
+Signature is valid for? (0) 1
+Signature expires at Tue 07 Mar 2017 15:48:44 AEST
+Is this correct? (y/N) y
+###################
+Signed add node request
+Using:
+34546BBDED7719C865C3C4E8210512A677C41E86
+Armored:
+-----BEGIN PGP MESSAGE-----
+Version: GnuPG v2
+
+owEBjwFw/pANAwAKAeM9o/Q1okb5ActZYgBYvPg9ClEKB2RlZmF1bHQSCWxvY2Fs
+aG9zdBivESIEY29yZSoyU0hBMjU2OjhRVk5UVFVlUDJuTjA5LzU4V2V2YmJiNDcr
+Zm9oLzNZY0toSi91TTdUOG+JASIEAAEKAAwFAli8+D0FgwABUYAACgkQ4z2j9DWi
+RvnjQwgAzFqqFy0mqUqBfY0MHKO1g1AqltlFzCvx4fdLmelu+8M0bs/n6Co4Es4S
+m3zPPurnoqZj024jeoF5KAJuYd+NpX4YGuSEUoFo3FYkdhJgwGqoJwQtEP0XZWOw
+Pbo7AWkMHFTsLSz78MwMtaUA27o5EWb+kWssuRn7hZQO13fO5Xz2KTB3LiXs+hjT
+3/OKFF+4ga2yYyUfgwnwNO3dAs0bp40S+PcPZ0VLMxn0fjEJI9oW5AhE99QtI5rZ
+u8XSiPNB1Ot8vdi6G85gNd1HX5kU+1CSY+glu98e5b2DQIRd62Cp/GvezeQOi3LX
+xhgqWD3f5d3+MtwYPp39hfrSsHF2Dw==
+=7CMK
+-----END PGP MESSAGE-----
+</code></pre><p>Copy everything after <code>Armored:</code> and go to: <code>http://192.168.100.1:9000/messaging/scheduler/34546BBDED7719C865C3C4E8210512A677C41E86/send</code></p>
+<p><img src="/images/screenshots/send_message_to_scheduler.png" alt="Sending message to scheduler"></p>
+<p>You should see message in the scheduler logs, reporting that the compute node has been created:</p>
+<pre><code>[info] 16:01:34.981 INFO  dit4c.scheduler.domain.RktNode - Node RktClusterManager-default-RktNode-core_localhost_2223_SHA256%3A8QVNTTUeP2nN09%2F58Wevbbb47%2Bfoh%2F3YcKhJ%2FuM7T8o: JustCreated → Active
+</code></pre><hr>
+<h2 id="dit4c-image-server">DIT4C image server</h2>
+<p>See <a href="https://github.com/dit4c/dit4c-imageserver-filesystem">dit4c-imageserver-filesystem</a> or <a href="https://github.com/dit4c/dit4c-imageserver-swift">dit4c-imageserver-swift</a> for details on running an image server.</p>
+<p>You should ensure <code>image.server</code> is set, either with:</p>
+<ul>
+<li>the run option <code>-Dimage.server=&quot;https://images.dit4c.example&quot;</code>, or</li>
+<li>in <code>prod.conf</code>.</li>
+</ul>
+<p>When running in a development environment, keep in mind that the portal and all compute nodes must be able to contact the image server directly.</p>
+<hr>
+<h2 id="dit4c-routing-server">DIT4C routing server</h2>
+<p>See <a href="https://github.com/dit4c/dit4c-routingserver-ssh/">dit4c-routingserver-ssh</a> for details on running a routing server.</p>
+<p>The matching pod helper, <a href="https://github.com/dit4c/dit4c-helper-listener-ssh">dit4c-helper-listener-ssh</a>, requires configuration to be supplied via <code>/config.json</code> from the portal. This can be supplied as in the portal configuration:</p>
+<pre><code>public-config {
+  # Routing servers
+  router.ssh.servers = [
+    &quot;bne.containers.dit4c.example:2222&quot;
+    &quot;mel.containers.dit4c.example:2222&quot;
+  ]
+</code></pre><p>To use the routing servers, specify a routing helper for schedulers using the <code>--listener-image</code> scheduler flag.</p>
+<p>When running in a development environment, keep in mind that all compute nodes must be able to contact the routing server directly.</p>
+<hr>
+<h2 id="dit4c-storage-server">DIT4C storage server</h2>
+<h3 id="security-implications">Security implications</h3>
+<p>Mounting file storage requires the scheduler to disable at runtime some security features of <a href="https://github.com/coreos/rkt">rkt</a> (<code>--insecure-options=seccomp,paths</code>). It is <strong>highly</strong> recommended that you use a specially-compiled version of <a href="https://github.com/coreos/rkt">rkt</a> that uses the KVM/QEMU stage 1 by default, so each container is run in its own hypervisor.</p>
+<p>ie.</p>
+<pre><code>git clone https://github.com/coreos/rkt.git
+cd rkt
+./autogen.sh
+./configure \
+  --with-stage1-flavors=kvm
+  --with-stage1-default-flavor=kvm
+  --with-stage1-kvm-hypervisors=qemu
+make
+</code></pre><h3 id="running">Running</h3>
+<p>The only shared file storage server, <a href="https://github.com/dit4c/dit4c-fileserver-9pfs">dit4c-fileserver-9pfs</a>, has quite poor IO performance due to the way the <a href="http://9p.cat-v.org/">9P filesystem</a> is affected by latency. It was implemented primarily as a proof-of-concept, as it&#39;s simpler than an implementation based on NTP, CIFS or SFTP.</p>
+<p>See <a href="https://github.com/dit4c/dit4c-fileserver-9pfs">dit4c-fileserver-9pfs</a> for details on running a storage server.</p>
+<p>The matching pod helper, <a href="https://github.com/dit4c/dit4c-helper-storage-9pfs">dit4c-helper-storage-9pfs</a>, requires configuration to be supplied via <code>/config.json</code> from the portal. This can be supplied as in the portal configuration:</p>
+<pre><code>public-config {
+  # Storage servers
+  storage.9pfs.servers = [
+    &quot;45.110.234.34:2222&quot;
+  ]
+}
+</code></pre><p>To use the storage servers, specify a storage helper for schedulers using the <code>--storage-image</code> scheduler flag. Some security features  of rkt are disabled in order to mount storage.</p>
+<p>When running in a development environment, keep in mind that all compute nodes must be able to contact the storage server directly.</p>
+
+      </div>
+    </div>
+  </article>
+  <footer class="jumbotron">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 text-center">
+          <p>Want to know more?</p>
+          <p>
+            <a href="https://github.com/dit4c/dit4c">
+              DIT4C on GitHub
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

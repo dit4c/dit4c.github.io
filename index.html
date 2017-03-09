@@ -18,11 +18,12 @@
   <link rel="icon" sizes="144x144" href="/images/icon-144x144.png"/>
   <link rel="icon" sizes="192x192" href="/images/icon-192x192.png"/>
 
-  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"/>
   <link href="/stylesheets/dockericon.css" rel="stylesheet"/>
   <link href="/stylesheets/main.css" rel="stylesheet"/>
-  <link href='//fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'/>
+  <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'/>
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet" type='text/css'/>
 
   <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
@@ -48,7 +49,7 @@
   <article class="container">
     <div class="row">
       <div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8">
-      <p><abbr title="Data Intensive Tools for the Cloud">DIT4C</abbr> <em>(dit-for-see)</em> is a platform for hosting data analysis tools &quot;in the cloud&quot; using Docker containers. Docker images provide the tools, and DIT4C provides a secure hosting platform for them.</p>
+      <p><abbr title="Data Intensive Tools for the Cloud">DIT4C</abbr> <em>(dit-for-see)</em> is a platform for hosting data analysis tools &quot;in the cloud&quot; using containers. Container images provide the tools, and DIT4C provides a secure hosting platform for them.</p>
 <p><a href="resbaz.html">Learn more about how DIT4C was used for ResBaz 2015</a></p>
 <hr>
 <h3 id="host-locally-run-globally">Host locally, run globally</h3>
@@ -58,14 +59,13 @@
 <h3 id="pick-an-image-or-bring-your-own">Pick an image, or bring your own</h3>
 <p>DIT4C has plenty of images to choose from:</p>
 <ul>
-<li><a href="https://hub.docker.com/r/dit4c/dit4c-container-ipython/">IPython Notebook</a></li>
+<li><a href="https://hub.docker.com/r/dit4c/dit4c-container-ipython/">Jupyter Python Notebook</a></li>
 <li><a href="https://hub.docker.com/r/dit4c/dit4c-container-rstudio/">RStudio</a></li>
-<li><a href="https://hub.docker.com/r/dit4c/dit4c-container-octave/">Octave (GUI)</a></li>
-<li><a href="https://hub.docker.com/r/dit4c/dit4c-container-jupyter/">Octave &amp; Julia (Jupyter)</a></li>
+<li><a href="https://hub.docker.com/r/dit4c/dit4c-container-jupyter/">Jupyter + R</a></li>
 <li><a href="https://hub.docker.com/r/dit4c/dit4c-container-openrefine/">OpenRefine</a></li>
+<li><a href="https://hub.docker.com/r/dit4c/dit4c-container-zeppelin/">Apache Zeppelin</a></li>
 <li><a href="https://hub.docker.com/r/dit4c/dit4c-container-slicer/">Slicer</a></li>
-<li><a href="https://hub.docker.com/r/dit4c/dit4c-container-blender/">Blender</a></li>
-<li><a href="https://hub.docker.com/r/dit4c/dit4c-container-gephi/">Gephi</a></li>
+<li><a href="https://hub.docker.com/r/dit4c/dit4c-container-fsl/">FSL</a></li>
 </ul>
 <p>If they&#39;re not an instant fit, that&#39;s OK. DIT4C can use any appropriate image from Docker Hub.</p>
 <h4 id="want-a-package-installed-for-all-new-containers-">Want a package installed for all new containers?</h4>
@@ -74,7 +74,7 @@
 
 FROM dit4c/dit4c-container-ipython
 
-ADD sudo yum install -y awesome-package-we-forgot
+ADD apt-get install -y awesome-package-we-forgot
 </code></pre><h4 id="need-to-run-your-own-tool-">Need to run your own tool?</h4>
 <p>Extend one of the base images:</p>
 <ul>
@@ -82,11 +82,13 @@ ADD sudo yum install -y awesome-package-we-forgot
 <li><a href="https://hub.docker.com/r/dit4c/dit4c-container-x11/">X11 Desktop</a></li>
 </ul>
 <hr>
-<h3 id="bring-your-own-compute">Bring Your Own Compute</h3>
-<p>To improve scalability and security, DIT4C runs all Docker containers on compute nodes separate from the portal.</p>
-<p>Compute nodes are spun up by their owners and registered with the portal. Compute node owners can then provide access tokens for others to use the node to run containers. Owners can stop or remove any container on their node via the portal, but not view their contents.</p>
-<p>From bare metal to cloud VMs, DIT4C allows compute to be provided in whatever way makes sense for the users. For the security-conscious, DIT4C can even use
-SSL for communication between the portal and individual compute nodes, providing end-to-end encryption.</p>
+<h3 id="architecture">Architecture</h3>
+<p>To improve scalability and security, DIT4C runs all containers on compute nodes separate from the portal.</p>
+<p>A portal can have multiple schedulers, each able to start containers on compute nodes. Through the use of routing servers, DIT4C is able to allow compute nodes and schedulers to exist on private networks with no open inbound ports, providing better security for compute and data.</p>
+<p><a href="./architecture.html">Read about DIT4C&#39;s architecture in more detail</a></p>
+<hr>
+<h3 id="running">Running</h3>
+<p>Let&#39;s <a href="./running.html">get started</a>...</p>
 <hr>
 <h3 id="release-signing-key">Release Signing Key</h3>
 <pre><code>-----BEGIN PGP PUBLIC KEY BLOCK-----
