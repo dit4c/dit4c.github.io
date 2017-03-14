@@ -40,14 +40,38 @@
     <div class="row">
       <div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8">
       <h1 id="dit4c-architecture">DIT4C Architecture</h1>
-<h2 id="overview">Overview</h2>
-<p><em>Explanatory text is coming soon...</em></p>
-<h3 id="basic-components">Basic Components</h3>
+<h2 id="basic-components">Basic Components</h2>
+<p>DIT4C has four core components:</p>
+<ul>
+<li>Portal</li>
+<li>Scheduler</li>
+<li>Routing server (can use <a href="https://ngrok.com/">ngrok</a> in dev)</li>
+<li>Compute Node</li>
+</ul>
+<p>This is enough to provide access to containerized tools to a user&#39;s web browser. Like <a href="https://github.com/jupyterhub/jupyterhub">Jupyter Hub</a>, but able to run more than Jupyter.</p>
 <p><img src="images/diagrams/high-level-arch-basic.dot.svg" alt=""></p>
-<h3 id="optional-components">Optional Components</h3>
+<p>The portal and routing server are the only components directly accessed by users. The scheduler and compute node can live on a private network without open ports (even a home router using NAT!).</p>
+<h2 id="optional-components">Optional Components</h2>
+<p>In addition, DIT4C can be run with a:</p>
+<ul>
+<li>Image server</li>
+<li>Storage/file server (experimental)</li>
+</ul>
+<p>An <em>image server</em> provides a mechanism for saving resulting container images. This allows a user to checkpoint their work in case of hardware failure, share images with other users, and generally use the system for more long-term work.</p>
+<p>A <em>file server</em> provides shared persistent storage between different user instances. A user can copy outputs from one research tool to storage, and then use them from another instance. It appears as a simple file-system mount under <code>/mnt</code>.</p>
 <p><img src="images/diagrams/high-level-arch-extra.dot.svg" alt=""></p>
-<h3 id="pod-components">Pod Components</h3>
+<p>Both services rely on the portal to authenticate access to them. No direct user interaction happens with them, so they don&#39;t need to be public to the internet, but they do need to be accessible from all compute nodes and the portal.</p>
+<h2 id="pod-components">Pod Components</h2>
+<p>Each container instance runs in a pod with a number of helper containers. This allows a compute node to avoid installing any software that needs maintenance or detailed configuration.</p>
+<ul>
+<li>Listener helper - listeners for traffic sent to a public routing server.</li>
+<li>Auth helper - reverse proxy which authenticates traffic before sending to the user container instance. It acts as an OAuth 2 client against the portal&#39;s OAuth 2 server.</li>
+<li>Storage helper - mounts persistent remote storage into the user container instance.</li>
+<li>Upload helper - once the instance has terminated, this helper uploads the saved image to the image server.</li>
+</ul>
 <p><img src="images/diagrams/pod-components.dot.svg" alt=""></p>
+<h2 id="further-detail">Further Detail</h2>
+<p>See &quot;<a href="./running.html">installation guide</a>&quot; for further details on how the components fit together.</p>
 
       </div>
     </div>
