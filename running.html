@@ -18,28 +18,19 @@
   <link rel="icon" sizes="144x144" href="/images/icon-144x144.png"/>
   <link rel="icon" sizes="192x192" href="/images/icon-192x192.png"/>
 
-  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"/>
-  <link href="/stylesheets/dockericon.css" rel="stylesheet"/>
-  <link href="/stylesheets/main.css" rel="stylesheet"/>
-  <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'/>
-  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet" type='text/css'/>
-
-  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script src="/libs/webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="/components/base-style.html"/>
 </head>
 <body>
-  <header class="pattern">
+  <header>
     <a href="/">
       <img class="img-responsive center-block"
           src="/images/logo.png"
           style="height: 80px; padding: 5px"/>
     </a>
   </header>
-  <article class="container">
-    <div class="row">
-      <div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8">
-      <h1 id="running-dit4c">Running DIT4C</h1>
+  <article>
+    <h1 id="running-dit4c">Running DIT4C</h1>
 <h2 id="overview">Overview</h2>
 <h3 id="in-development">In Development</h3>
 <p>To run a minimal DIT4C environment for development, you need to run the following:</p>
@@ -699,22 +690,14 @@ make
 </code></pre><p>To use the storage servers, specify a storage helper for schedulers using the <code>--storage-image</code> scheduler flag. Some security features  of rkt are disabled in order to mount storage.</p>
 <p>When running in a development environment, keep in mind that all compute nodes must be able to contact the storage server directly.</p>
 
-      </div>
-    </div>
   </article>
-  <footer class="jumbotron">
-    <div class="container">
-      <div class="row">
-        <div class="col-xs-12 text-center">
-          <p>Want to know more?</p>
-          <p>
-            <a href="https://github.com/dit4c/dit4c">
-              DIT4C on GitHub
-            </a>
-          </p>
-        </div>
-      </div>
-    </div>
+  <footer>
+    <p>Want to know more?</p>
+    <p>
+      <a href="https://github.com/dit4c/dit4c">
+        DIT4C on GitHub
+      </a>
+    </p>
   </footer>
 </body>
 </html>
