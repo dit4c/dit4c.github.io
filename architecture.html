@@ -71,7 +71,7 @@
 <p>The storage helper mounts remote user storage and exposes it to the app instance. The file server is responsible for authenticating the storage helper connection by looking up the published instance public keys from the portal.</p>
 <p><img src="images/diagrams/helper-storage.dot.svg" alt=""></p>
 <h3 id="upload-helper">Upload Helper</h3>
-<p>The upload helper sends the saved app instance image to the image server. The scheduler provides a image server base URL which includes authentication details, and the image server authenticates connections by passing request headers to portal. Once complete, the upload helper is responsible for notifying the image server of the new image URL.</p>
+<p>The upload helper sends the saved app instance image to the image server. The scheduler provides a image server base URL which includes authentication details, and the image server authenticates connections by passing request headers to portal. Once complete, the upload helper is responsible for notifying the portal of the new image URL.</p>
 <p><img src="images/diagrams/helper-upload.dot.svg" alt=""></p>
 <h2 id="further-detail">Further Detail</h2>
 <p>See &quot;<a href="./running.html">installation guide</a>&quot; for further details on how the components fit together.</p>
