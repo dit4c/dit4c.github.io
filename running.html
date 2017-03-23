@@ -148,10 +148,12 @@ images {
     openrefine {
       display = &quot;OpenRefine&quot;
       image = &quot;https://openstack-swift-server.example:8888/v1/AUTH_baaf1c56475deb8506abd9325fb69a07/dit4c-public-images/dit4c-dit4c-container-openrefine-latest.aci&quot;
+      tags = [&quot;OpenRefine&quot;]
     }
     jupyter {
       display = &quot;Jupyter with Python &amp; R&quot;
       image = &quot;https://openstack-swift-server.example:8888/v1/AUTH_baaf1c56475deb8506abd9325fb69a07/dit4c-public-images/dit4c-dit4c-container-jupyter-latest.aci&quot;
+      tags = [&quot;Python&quot;, &quot;R&quot;]
     }
   }
 }
@@ -690,7 +692,7 @@ make
 </code></pre><p>To use the storage servers, specify a storage helper for schedulers using the <code>--storage-image</code> scheduler flag. Some security features  of rkt are disabled in order to mount storage.</p>
 <p>When running in a development environment, keep in mind that all compute nodes must be able to contact the storage server directly.</p>
 
-  <div class="timestamp">Last updated: 2017-03-16T02:01:34Z</div>
+  <div class="timestamp">Last updated: 2017-03-23T04:33:47Z</div>
   </article>
   <footer>
     <p>Want to know more?</p>
