@@ -29,7 +29,7 @@
   <article>
   <p><abbr title="Data Intensive Tools for the Cloud">DIT4C</abbr> <em>(dit-for-see)</em> is a platform for hosting data analysis tools &quot;in the cloud&quot; using containers. Container images provide the tools, and DIT4C provides a secure hosting platform for them.</p>
 <hr>
-<h3 id="host-locally-run-globally">Host locally, run globally</h3>
+<h3 id="host-locally-use-globally">Host locally, use globally</h3>
 <p>DIT4C isn&#39;t a hosted service. You can run it anywhere you want.</p>
 <p>As long as your users have Internet access and a modern browser, they&#39;ll be able to get to their tools from wherever they are.</p>
 <hr>
@@ -44,7 +44,7 @@
 <li><a href="https://hub.docker.com/r/dit4c/dit4c-container-slicer/">Slicer</a></li>
 <li><a href="https://hub.docker.com/r/dit4c/dit4c-container-fsl/">FSL</a></li>
 </ul>
-<p>If they&#39;re not an instant fit, that&#39;s OK. DIT4C can use any appropriate image from Docker Hub.</p>
+<p>If they&#39;re not an instant fit, that&#39;s OK. DIT4C can use any container image that exposes its functionality via HTTP (80/tcp or 8080/tcp).</p>
 <h4 id="want-a-package-installed-for-all-new-containers-">Want a package installed for all new containers?</h4>
 <p>Extend one of the existing tool images.</p>
 <pre><code># DOCKERFILE 1.0
@@ -59,6 +59,12 @@ ADD apt-get install -y awesome-package-we-forgot
 <li><a href="https://hub.docker.com/r/dit4c/dit4c-container-x11/">X11 Desktop</a></li>
 </ul>
 <hr>
+<h3 id="workflow">Workflow</h3>
+<p>DIT4C container instances provide access to research tools, which can be stopped and saved to image to persist their state. This allows continued work using different compute nodes and/or clusters. Persisted instances can also be shared with other users.</p>
+<p><img src="images/diagrams/workflows.dot.svg" alt=""></p>
+<p>In this example, Alice saves a<sub>1</sub> and shares it with Bob. Bob then creates b<sub>1</sub> to continue working. Bob saves b<sub>1</sub> and continues work in b<sub>2</sub>, but doesn&#39;t like how things have turned out. He discards b<sub>2</sub> and begins work from b<sub>1</sub> again with b<sub>3</sub>.</p>
+<p>Both Alice and Bob finish their work, and export their environment so others can reproduce their analysis in future.</p>
+<hr>
 <h3 id="architecture">Architecture</h3>
 <p>To improve scalability and security, DIT4C runs all containers on compute nodes separate from the portal.</p>
 <p>A portal can have multiple schedulers, each able to start containers on compute nodes. Through the use of routing servers, DIT4C is able to allow compute nodes and schedulers to exist on private networks with no open inbound ports, providing better security for compute and data.</p>
@@ -70,7 +76,7 @@ ADD apt-get install -y awesome-package-we-forgot
 <h3 id="release-signing-key">Release Signing Key</h3>
 <p><a href="./release-signing-key.asc">Download release-signing-key.asc</a></p>
 
-  <div class="timestamp">Last updated: 2017-03-23T04:33:47Z</div>
+  <div class="timestamp">Last updated: 2017-03-23T06:30:16Z</div>
   </article>
   <footer>
     <p>Want to know more?</p>

@@ -140,8 +140,6 @@ silhouette {
 images {
   # DIT4C image server for saving images
   server=&quot;https://images.dit4c.example&quot;
-  # Helper ACI for uploading images
-  saveHelper=&quot;https://openstack-swift-server.example:8888/v1/AUTH_faa5bca1140a4824bfc96215c92498dd/dit4c-public-images/dit4c-helper-upload-webdav.linux.amd64.aci&quot;
   # Public container images (converted using docker2aci)
   public=null
   public {
@@ -692,7 +690,7 @@ make
 </code></pre><p>To use the storage servers, specify a storage helper for schedulers using the <code>--storage-image</code> scheduler flag. Some security features  of rkt are disabled in order to mount storage.</p>
 <p>When running in a development environment, keep in mind that all compute nodes must be able to contact the storage server directly.</p>
 
-  <div class="timestamp">Last updated: 2017-03-23T04:33:47Z</div>
+  <div class="timestamp">Last updated: 2017-03-23T06:30:16Z</div>
   </article>
   <footer>
     <p>Want to know more?</p>
