@@ -68,6 +68,12 @@ ADD apt-get install -y awesome-package-we-forgot
 <p>In this example, Alice saves a<sub>1</sub> and shares it with Bob. Bob then creates b<sub>1</sub> to continue working. Bob saves b<sub>1</sub> and continues work in b<sub>2</sub>, but doesn&#39;t like how things have turned out. He discards b<sub>2</sub> and begins work from b<sub>1</sub> again with b<sub>3</sub>.</p>
 <p>Both Alice and Bob finish their work, and export their environment so others can reproduce their analysis in future.</p>
 <hr>
+<h3 id="screenshots">Screenshots</h3>
+<p><img src="/images/screenshots/portal_instances.png" alt="Portal Instances"></p>
+<p><img src="/images/screenshots/instance_landing_page.png" alt="Instance Landing Page"></p>
+<p><img src="/images/screenshots/instance_rstudio.png" alt="Instance RStudio"></p>
+<p><img src="/images/screenshots/instance_terminal.png" alt="Instance Terminal"></p>
+<hr>
 <h3 id="architecture">Architecture</h3>
 <p>To improve scalability and security, DIT4C runs all containers on compute nodes separate from the portal.</p>
 <p>A portal can have multiple schedulers, each able to start containers on compute nodes. Through the use of routing servers, DIT4C is able to allow compute nodes and schedulers to exist on private networks with no open inbound ports, providing better security for compute and data.</p>
@@ -79,7 +85,7 @@ ADD apt-get install -y awesome-package-we-forgot
 <h3 id="release-signing-key">Release Signing Key</h3>
 <p><a href="./release-signing-key.asc">Download release-signing-key.asc</a></p>
 
-  <div class="timestamp">Last updated: 2017-03-23T06:56:58Z</div>
+  <div class="timestamp">Last updated: 2017-03-24T02:02:10Z</div>
   </article>
   <footer>
     <p>Want to know more?</p>
